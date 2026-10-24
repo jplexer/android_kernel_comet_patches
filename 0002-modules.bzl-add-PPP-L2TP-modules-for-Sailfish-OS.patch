@@ -1,0 +1,40 @@
+From 34cc945bc729b0836ae50b8b33694b43895cb5cd Mon Sep 17 00:00:00 2001
+From: Joshua Jun <joshuajun@proton.me>
+Date: Sat, 24 Oct 2026 21:19:38 +0000
+Subject: [PATCH 2/2] modules.bzl: add PPP/L2TP modules for Sailfish OS
+
+Change-Id: Ia663e5bc0c1777b91726e89b8a8206086fd0a446
+---
+ modules.bzl | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/modules.bzl b/modules.bzl
+index 52d92225aab4..604a72927086 100644
+--- a/modules.bzl
++++ b/modules.bzl
+@@ -18,9 +18,12 @@ _COMMON_GKI_MODULES_LIST = [
+     "drivers/net/can/vcan.ko",
+     "drivers/net/mii.ko",
+     "drivers/net/ppp/bsd_comp.ko",
++    "drivers/net/ppp/ppp_async.ko",
+     "drivers/net/ppp/ppp_deflate.ko",
+     "drivers/net/ppp/ppp_generic.ko",
+     "drivers/net/ppp/ppp_mppe.ko",
++    "drivers/net/ppp/ppp_synctty.ko",
++    "drivers/net/ppp/pppoe.ko",
+     "drivers/net/ppp/pppox.ko",
+     "drivers/net/ppp/pptp.ko",
+     "drivers/net/slip/slhc.ko",
+@@ -61,6 +64,9 @@ _COMMON_GKI_MODULES_LIST = [
+     "net/ieee802154/ieee802154.ko",
+     "net/ieee802154/ieee802154_socket.ko",
+     "net/l2tp/l2tp_core.ko",
++    "net/l2tp/l2tp_ip.ko",
++    "net/l2tp/l2tp_ip6.ko",
++    "net/l2tp/l2tp_netlink.ko",
+     "net/l2tp/l2tp_ppp.ko",
+     "net/mac802154/mac802154.ko",
+     "net/nfc/nfc.ko",
+-- 
+2.54.0
+
