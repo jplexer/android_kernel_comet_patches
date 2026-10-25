@@ -1,0 +1,9 @@
+external/audioflingerglue/Android.mk
+external/busybox/Android.mk
+external/droidmedia/Android.mk
+external/libhybris/libhybris/compat/camera/Android.mk
+external/libhybris/libhybris/compat/hwc2/Android.mk
+external/libhybris/libhybris/compat/input/Android.mk
+external/libhybris/libhybris/compat/media/Android.mk
+external/libhybris/libhybris/compat/surface_flinger/Android.mk
+external/libhybris/libhybris/compat/ui/Android.mk
