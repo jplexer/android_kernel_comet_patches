@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+	<!-- device / vendor (LineageOS, TheMuppets) -->
 	<project path="device/google/comet"
     name="LineageOS/android_device_google_comet"
 		revision="lineage-23.2" />
@@ -13,14 +14,26 @@
                 name="LineageOS/android_device_google_gs-common"
                 revision="lineage-23.2" />
 	<project name="TheMuppets/proprietary_vendor_google_comet" path="vendor/google/comet" remote="github" revision="lineage-23.2" clone-depth="1" />
+
+	 <!-- hybris middleware -->
 	<extend-project name="sailfishos/droidmedia" revision="android16-qpr2" />
-	<project path="external/libhybris" name="mer-hybris/libhybris" remote="github" revision="master" />
+	<project path="external/libhybris" name="mer-hybris/libhybris" remote="github" revision="master" sync-s="true" />
+
+	<!-- comet forks -->
+	<remove-project name="mer-hybris/hybris-boot" />
+  <project path="hybris/hybris-boot"
+         name="jplexer/hybris-boot" remote="github" revision="comet" />
 	<project path="rpm/"
-         name="jplexer/droid-hal-comet" revision="master" />
+         name="jplexer/droid-hal-comet" revision="master" sync-s="true" />
 	<project path="hybris/droid-configs"
-         name="jplexer/droid-config-comet" revision="master" />
+         name="jplexer/droid-config-comet" revision="master" sync-s="true" />
 	<project path="hybris/droid-hal-version-comet"
          name="jplexer/droid-hal-version-comet" revision="master" />
-
+	<project path="hybris/mw/qt5-qpa-hwcomposer-plugin"
+         name="jplexer/qt5-qpa-hwcomposer-plugin" remote="github" revision="comet" />
+  <project path="hybris/mw/libhybris-tlspad"
+         name="jplexer/libhybris-tlspad" remote="github" revision="master" />
+	<project path="hybris/mw/parse-android-dynparts"
+         name="jplexer/parse-android-dynparts" remote="github" revision="master" />
 </manifest>
 
