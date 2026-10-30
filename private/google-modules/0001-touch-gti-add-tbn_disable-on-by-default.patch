@@ -1,0 +1,46 @@
+From 707c2500ec643937d94251479f95b60dd55bf19b Mon Sep 17 00:00:00 2001
+From: Joshua Jun <joshuajun@proton.me>
+Date: Fri, 30 Oct 2026 12:13:59 +0100
+Subject: [PATCH] touch: gti: add tbn_disable, on by default
+
+The AoC only acknowledges TBN bus handovers when Pixel's Android touch
+stack is running. On Sailfish OS every screen-off/on waits for the TBN
+timeout (~3 s each) and touch is dead after wake-up. Keep the bus on
+the AP unless goog_touch_interface.tbn_disable=0 is set.
+
+Change-Id: Ic6640dbf00f2f3495255808828a0732795f8cc6e
+---
+ touch/common/goog_touch_interface.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/touch/common/goog_touch_interface.c b/touch/common/goog_touch_interface.c
+index 288e59b4b2..ddad456298 100644
+--- a/touch/common/goog_touch_interface.c
++++ b/touch/common/goog_touch_interface.c
+@@ -555,6 +555,14 @@ static ssize_t interactive_calibrate_store(struct device *dev,
+ 		struct device_attribute *attr, const char *buf, size_t size);
+ 
+ static DEVICE_ATTR_RO(config_name);
++/* Sailfish OS: the AoC only answers TBN bus handovers with Pixel's Android
++ * touch stack running. Without it every screen-off/on waits for the TBN
++ * timeout and touch is dead for seconds after wake-up.
++ */
++static bool tbn_disable = true;
++module_param(tbn_disable, bool, 0444);
++MODULE_PARM_DESC(tbn_disable, "Never hand the touch bus to the AoC");
++
+ static DEVICE_ATTR_RW(force_active);
+ static DEVICE_ATTR_RW(fw_coord_filter);
+ static DEVICE_ATTR_RW(fw_grip);
+@@ -4147,7 +4155,7 @@ void goog_register_tbn(struct goog_touch_interface *gti)
+ {
+ 	struct device_node *np = gti->vendor_dev->of_node;
+ 
+-	gti->tbn_enabled = of_property_read_bool(np, "goog,tbn-enabled");
++	gti->tbn_enabled = !tbn_disable && of_property_read_bool(np, "goog,tbn-enabled");
+ 	if (gti->tbn_enabled) {
+ 		if (register_tbn(&gti->tbn_register_mask)) {
+ 			GOOG_ERR(gti, "Fail to register tbn context!\n");
+-- 
+2.54.0
+
