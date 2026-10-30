@@ -1,0 +1,33 @@
+From 71407760583cce0f3594455648cac3695d8b0924 Mon Sep 17 00:00:00 2001
+From: Joshua Jun <joshuajun@proton.me>
+Date: Sun, 25 Oct 2026 23:47:28 +0100
+Subject: [PATCH] hardware: load droid-hybris HAL modules in the system
+ namespace
+
+Modules under /usr/libexec/droid-hybris/system/lib64/hw are system
+libraries built in the system tree (e.g. audio.hidl_compat.default).
+Loading them through the sphal namespace hides their system
+dependencies such as libaudiohal from /system/lib64.
+
+Change-Id: I318cd0602257834e12e3628b32486852933c470c
+---
+ hardware.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/hardware.c b/hardware.c
+index 6aa4adb7..371c500d 100644
+--- a/hardware.c
++++ b/hardware.c
+@@ -96,7 +96,8 @@ static int load(const char *id,
+      * RTLD_NOW the external symbols will not be global
+      */
+     if (try_system &&
+-        strncmp(path, HAL_LIBRARY_PATH1, strlen(HAL_LIBRARY_PATH1)) == 0) {
++        (strncmp(path, HAL_LIBRARY_PATH1, strlen(HAL_LIBRARY_PATH1)) == 0 ||
++         strncmp(path, HAL_LIBRARY_PATH4, strlen(HAL_LIBRARY_PATH4)) == 0)) {
+         /* If the library is in system partition, no need to check
+          * sphal namespace. Open it with dlopen.
+          */
+-- 
+2.54.0
+

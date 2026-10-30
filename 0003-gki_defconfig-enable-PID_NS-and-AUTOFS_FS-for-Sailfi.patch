@@ -1,0 +1,37 @@
+From e2dee2fa9c1ccd7cf95cd91afa419b109cd2810e Mon Sep 17 00:00:00 2001
+From: Joshua Jun <joshuajun@proton.me>
+Date: Mon, 26 Oct 2026 00:04:02 +0100
+Subject: [PATCH] gki_defconfig: enable PID_NS and AUTOFS_FS for Sailfish OS
+
+sailjail/firejail creates a PID namespace for every sandboxed app, clone()
+fails with EINVAL without CONFIG_PID_NS. systemd needs autofs for
+automount units.
+
+Change-Id: I7c2d4f44d89e3e17acbb697cc326d29b3a3459bf
+---
+ arch/arm64/configs/gki_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/configs/gki_defconfig b/arch/arm64/configs/gki_defconfig
+index fd87cd5f24ea..860a875edf6b 100644
+--- a/arch/arm64/configs/gki_defconfig
++++ b/arch/arm64/configs/gki_defconfig
+@@ -33,7 +33,6 @@ CONFIG_CPUSETS=y
+ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_CGROUP_BPF=y
+ CONFIG_NAMESPACES=y
+-# CONFIG_PID_NS is not set
+ CONFIG_RT_SOFTIRQ_AWARE_SCHED=y
+ # CONFIG_RD_BZIP2 is not set
+ # CONFIG_RD_LZMA is not set
+@@ -653,6 +652,7 @@ CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y
+ CONFIG_QUOTA=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+ CONFIG_QFMT_V2=y
++CONFIG_AUTOFS_FS=y
+ CONFIG_FUSE_FS=y
+ CONFIG_VIRTIO_FS=y
+ CONFIG_FUSE_BPF=y
+-- 
+2.54.0
+

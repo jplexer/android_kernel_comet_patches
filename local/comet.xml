@@ -35,5 +35,8 @@
          name="jplexer/libhybris-tlspad" remote="github" revision="master" />
 	<project path="hybris/mw/parse-android-dynparts"
          name="jplexer/parse-android-dynparts" remote="github" revision="master" />
+  <remote name="halium" fetch="https://github.com/Halium" />
+  <project path="vendor/halium/hardware" name="android_vendor_halium_hardware" remote="halium" revision="halium-16.0" />
+  <project path="hybris/mw/pulseaudio-modules-droid" name="jplexer/pulseaudio-modules-droid" remote="github" revision="comet" />
 </manifest>
 

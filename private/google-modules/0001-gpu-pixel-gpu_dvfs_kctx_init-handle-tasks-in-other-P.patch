@@ -1,0 +1,64 @@
+From 9b5d156a55e6da211b514937ee4c7f9d484e164e Mon Sep 17 00:00:00 2001
+From: Joshua Jun <joshuajun@proton.me>
+Date: Mon, 26 Oct 2026 00:38:53 +0100
+Subject: [PATCH] gpu: pixel: gpu_dvfs_kctx_init: handle tasks in other PID
+ namespaces
+
+find_get_pid() looks the tgid up in the caller's PID namespace. For a
+sandboxed process (e.g. firejail/sailjail on Sailfish OS) nothing is
+found and task->cred dereferenced NULL. Fall back to current_uid(),
+the context is created by the calling process.
+
+Change-Id: I6adc51e24c5679c408155d80a85c757f782e6532
+---
+ .../platform/pixel/pixel_gpu_dvfs_metrics.c           | 11 +++++++++--
+ .../platform/pixel/pixel_gpu_dvfs_metrics.c           | 11 +++++++++--
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/gpu/borr_mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c b/gpu/borr_mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c
+index bfb022f713..09e9a9f660 100644
+--- a/gpu/borr_mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c
++++ b/gpu/borr_mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c
+@@ -278,8 +278,15 @@ int gpu_dvfs_kctx_init(struct kbase_context *kctx)
+ 	/* Get UID from task_struct */
+ 	pid = find_get_pid(kctx->kprcs->tgid);
+ 	task = get_pid_task(pid, PIDTYPE_TGID);
+-	uid = task->cred->uid;
+-	put_task_struct(task);
++	if (task) {
++		uid = task->cred->uid;
++		put_task_struct(task);
++	} else {
++		/* tgid is not visible in the caller's PID namespace (e.g. a
++		 * sandboxed process), the context is created by the caller
++		 */
++		uid = current_uid();
++	}
+ 	put_pid(pid);
+ 	uid_hash = gpu_dvfs_hash_uid_stats(__kuid_val(uid));
+ 
+diff --git a/gpu/mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c b/gpu/mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c
+index bfb022f713..09e9a9f660 100644
+--- a/gpu/mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c
++++ b/gpu/mali_kbase/platform/pixel/pixel_gpu_dvfs_metrics.c
+@@ -278,8 +278,15 @@ int gpu_dvfs_kctx_init(struct kbase_context *kctx)
+ 	/* Get UID from task_struct */
+ 	pid = find_get_pid(kctx->kprcs->tgid);
+ 	task = get_pid_task(pid, PIDTYPE_TGID);
+-	uid = task->cred->uid;
+-	put_task_struct(task);
++	if (task) {
++		uid = task->cred->uid;
++		put_task_struct(task);
++	} else {
++		/* tgid is not visible in the caller's PID namespace (e.g. a
++		 * sandboxed process), the context is created by the caller
++		 */
++		uid = current_uid();
++	}
+ 	put_pid(pid);
+ 	uid_hash = gpu_dvfs_hash_uid_stats(__kuid_val(uid));
+ 
+-- 
+2.54.0
+
